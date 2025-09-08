@@ -27,16 +27,17 @@ fun QuantifiedProgressIndicator(
     current: Int,
     total: Int,
     modifier: Modifier = Modifier,
-    stageTimeSeconds: Int = 40
+    stageTimeSeconds: Int = 40,
+    timerActive: Boolean = true
 ) {
     // Calculate time-based progress
     val totalTimeSeconds = total * stageTimeSeconds
     var elapsedSeconds by remember { mutableIntStateOf(0) }
     
-    // Timer effect - only run when analysis is in progress
-    LaunchedEffect(current) {
-        if (current > 0 && current <= total) {
-            while (elapsedSeconds < totalTimeSeconds) {
+    // Timer effect - only run when timer is active and analysis is in progress
+    LaunchedEffect(current, timerActive) {
+        if (timerActive && current > 0 && current <= total) {
+            while (elapsedSeconds < totalTimeSeconds && current > 0 && timerActive) {
                 delay(1000L)
                 elapsedSeconds += 1
                 
@@ -46,8 +47,8 @@ fun QuantifiedProgressIndicator(
                     break
                 }
             }
-        } else if (current == 0) {
-            // Reset timer when analysis hasn't started
+        } else if (current == 0 || !timerActive) {
+            // Reset timer when analysis hasn't started or timer is inactive
             elapsedSeconds = 0
         }
     }
@@ -57,8 +58,11 @@ fun QuantifiedProgressIndicator(
         0f
     } else if (current >= total) {
         1f
+    } else if (!timerActive) {
+        // For photo capture mode, just show step-based progress
+        current.toFloat() / total.toFloat()
     } else {
-        // Base progress on stages completed + time in current stage
+        // For analysis mode, base progress on stages completed + time in current stage
         val completedStages = current - 1
         val baseProgress = completedStages.toFloat() / total.toFloat()
         val currentStageProgress = minOf(elapsedSeconds % stageTimeSeconds, stageTimeSeconds).toFloat() / stageTimeSeconds.toFloat()
@@ -156,56 +160,9 @@ fun QuantifiedProgressIndicator(
                 }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Stage indicators with time labels
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                repeat(total) { index ->
-                    val stepNumber = index + 1
-                    val isCompleted = stepNumber <= current
-                    val isCurrent = stepNumber == current && current <= total
-                    
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Surface(
-                            shape = RoundedCornerShape(50),
-                            color = when {
-                                isCompleted && current > stepNumber -> progressColor
-                                isCurrent -> progressColor.copy(alpha = 0.7f)
-                                else -> Color.White.copy(alpha = 0.3f)
-                            },
-                            modifier = Modifier.size(20.dp)
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                Text(
-                                    text = stepNumber.toString(),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (isCompleted || isCurrent) Color.White else Color.Gray,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                        
-                        Spacer(modifier = Modifier.height(2.dp))
-                        
-                        Text(
-                            text = "${stageTimeSeconds}s",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White.copy(alpha = 0.6f)
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(6.dp))
             
             // Status text with detailed timing
-            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = when {
                     current == 0 -> "Ready to analyze • ~${formatTime(totalTimeSeconds)} total"

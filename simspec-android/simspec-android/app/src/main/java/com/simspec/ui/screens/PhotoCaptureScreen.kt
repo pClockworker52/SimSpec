@@ -346,6 +346,7 @@ private fun PhotoCaptureState(
                     current = uiState.currentPhotoStep - 1,
                     total = 3,
                     stageTimeSeconds = 10, // Quick photo capture, 10s per photo
+                    timerActive = false, // No timer during photo capture
                     modifier = Modifier.fillMaxWidth()
                 )
                 
@@ -498,6 +499,7 @@ private fun AnalyzingState(
                     current = uiState.analysisProgress.first,
                     total = uiState.analysisProgress.second,
                     stageTimeSeconds = 40, // 40 seconds per analysis stage
+                    timerActive = true, // Timer active during analysis
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
