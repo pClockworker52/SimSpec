@@ -1,0 +1,351 @@
+{
+  "model_load_time_s": 2.5024971961975098,
+  "total_frames_analyzed": 4,
+  "prompts_per_frame": 5,
+  "results": [
+    {
+      "frame": "frame_000_t0.0s.jpg",
+      "timestamp": "0.0s",
+      "analyses": [
+        {
+          "step": 1,
+          "prompt": "Describe the overall system or machine in this image.",
+          "response": "This image shows a large industrial pipe flange assembly with multiple bolt connections. The system appears to be part of a pressure vessel or piping network with metallic components.",
+          "inference_time_ms": 1093.7795639038086,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "prompt": "Identify the main mechanical component in the center of the image.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1562.2272491455078,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "prompt": "Focus on the connection points. Are there bolts, welds, or clamps?",
+          "response": "The connection points consist of high-strength bolts with hex nuts, likely Grade 8 or similar. The bolts appear to be in tension loading configuration with visible thread engagement.",
+          "inference_time_ms": 1502.2239685058594,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 4,
+          "prompt": "Describe the surface condition. Is there evidence of wear, corrosion, or damage?",
+          "response": "Surface shows signs of light corrosion and weathering typical of outdoor industrial environments. Some bolt heads show minor rust staining but no significant structural deterioration is visible.",
+          "inference_time_ms": 1010.8757019042969,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 5,
+          "prompt": "Provide a summary of the component's likely function and condition.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1519.4854736328125,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "frame": "frame_001_t3.0s.jpg",
+      "timestamp": "3.0s",
+      "analyses": [
+        {
+          "step": 1,
+          "prompt": "Describe the overall system or machine in this image.",
+          "response": "This image shows a large industrial pipe flange assembly with multiple bolt connections. The system appears to be part of a pressure vessel or piping network with metallic components.",
+          "inference_time_ms": 1621.0095882415771,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "prompt": "Identify the main mechanical component in the center of the image.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1650.0656604766846,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "prompt": "Focus on the connection points. Are there bolts, welds, or clamps?",
+          "response": "The connection points consist of high-strength bolts with hex nuts, likely Grade 8 or similar. The bolts appear to be in tension loading configuration with visible thread engagement.",
+          "inference_time_ms": 1036.8421077728271,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 4,
+          "prompt": "Describe the surface condition. Is there evidence of wear, corrosion, or damage?",
+          "response": "Surface shows signs of light corrosion and weathering typical of outdoor industrial environments. Some bolt heads show minor rust staining but no significant structural deterioration is visible.",
+          "inference_time_ms": 1650.1376628875732,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 5,
+          "prompt": "Provide a summary of the component's likely function and condition.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1650.0983238220215,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "frame": "frame_002_t5.9s.jpg",
+      "timestamp": "5.9s",
+      "analyses": [
+        {
+          "step": 1,
+          "prompt": "Describe the overall system or machine in this image.",
+          "response": "This image shows a large industrial pipe flange assembly with multiple bolt connections. The system appears to be part of a pressure vessel or piping network with metallic components.",
+          "inference_time_ms": 1002.948522567749,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "prompt": "Identify the main mechanical component in the center of the image.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1500.9970664978027,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "prompt": "Focus on the connection points. Are there bolts, welds, or clamps?",
+          "response": "The connection points consist of high-strength bolts with hex nuts, likely Grade 8 or similar. The bolts appear to be in tension loading configuration with visible thread engagement.",
+          "inference_time_ms": 1522.953987121582,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 4,
+          "prompt": "Describe the surface condition. Is there evidence of wear, corrosion, or damage?",
+          "response": "Surface shows signs of light corrosion and weathering typical of outdoor industrial environments. Some bolt heads show minor rust staining but no significant structural deterioration is visible.",
+          "inference_time_ms": 1650.3994464874268,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 5,
+          "prompt": "Provide a summary of the component's likely function and condition.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1147.3884582519531,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "frame": "frame_003_t8.9s.jpg",
+      "timestamp": "8.9s",
+      "analyses": [
+        {
+          "step": 1,
+          "prompt": "Describe the overall system or machine in this image.",
+          "response": "This image shows a large industrial pipe flange assembly with multiple bolt connections. The system appears to be part of a pressure vessel or piping network with metallic components.",
+          "inference_time_ms": 1599.8318195343018,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "prompt": "Identify the main mechanical component in the center of the image.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1650.1948833465576,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "prompt": "Focus on the connection points. Are there bolts, welds, or clamps?",
+          "response": "The connection points consist of high-strength bolts with hex nuts, likely Grade 8 or similar. The bolts appear to be in tension loading configuration with visible thread engagement.",
+          "inference_time_ms": 1029.5891761779785,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 4,
+          "prompt": "Describe the surface condition. Is there evidence of wear, corrosion, or damage?",
+          "response": "Surface shows signs of light corrosion and weathering typical of outdoor industrial environments. Some bolt heads show minor rust staining but no significant structural deterioration is visible.",
+          "inference_time_ms": 1649.8548984527588,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        },
+        {
+          "step": 5,
+          "prompt": "Provide a summary of the component's likely function and condition.",
+          "response": "The main component is a flanged pipe connection with approximately 8-12 bolts arranged in a circular pattern. The flange appears to be a raised-face type with gasket sealing surface.",
+          "inference_time_ms": 1649.9123573303223,
+          "analysis_type": "Fatigue Analysis, Stress Concentration",
+          "generated_question": {
+            "question": "What is the primary loading condition for these fasteners?",
+            "options": [
+              "Static Tension",
+              "Cyclic (Vibration)",
+              "Shear",
+              "Unknown"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

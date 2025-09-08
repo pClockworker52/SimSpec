@@ -8,12 +8,13 @@ import kotlin.random.Random
 
 /**
  * ExportService - Generates professional engineering simulation requests
- * Optimized for the new FEA-focused prompts
+ * Simplified version that preserves raw AI analysis for human interpretation
  */
 object ExportService {
     
     /**
      * Generate a professional engineering simulation request from analysis results
+     * This version presents the raw AI analysis clearly for FEA engineer review
      */
     fun generateSimulationRequest(
         analysisResults: List<MainViewModel.AnalysisResult>,
@@ -23,505 +24,304 @@ object ExportService {
             return "No analysis results available for export."
         }
         
-        // Extract analysis from each stage
-        val stage1Result = analysisResults.find { it.step == 1 }
-        val stage2Result = analysisResults.find { it.step == 2 }
-        val stage3Result = analysisResults.find { it.step == 3 }
-        
-        // Parse key information from each stage
-        val componentInfo = parseComponentDescription(stage1Result?.text ?: "")
-        val connectionInfo = parseConnectionAnalysis(stage2Result?.text ?: "")
-        val stressInfo = parseStressAnalysis(stage3Result?.text ?: "")
+        // Get raw results from each stage
+        val stage1 = analysisResults.find { it.step == 1 }
+        val stage2 = analysisResults.find { it.step == 2 }
+        val stage3 = analysisResults.find { it.step == 3 }
         
         // Generate metadata
         val requestId = generateRequestId()
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(Date())
         val totalInferenceTime = analysisResults.sumOf { it.inferenceTime }
         
+        // Extract basic component name from Stage 1 if possible
+        val componentName = extractBasicComponentName(stage1?.text ?: "")
+        
+        // Assess analysis quality
+        val qualityAssessment = assessAnalysisQuality(analysisResults)
+        
         return buildString {
-            appendLine("SIMULATION SCOPING REPORT")
-            appendLine("═══════════════════════════════════════════════")
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine("                    FEA SCOPING REQUEST")
+            appendLine("═══════════════════════════════════════════════════════════════")
             appendLine()
-            appendLine("Request ID: $requestId")
-            appendLine("Analysis Date: $currentDate")
-            appendLine("Vision Processing Time: ${totalInferenceTime}ms")
+            appendLine("Request ID:        $requestId")
+            appendLine("Date Generated:    $currentDate")
+            appendLine("Component:         $componentName")
+            appendLine("Analysis Time:     ${totalInferenceTime}ms")
+            appendLine("Analysis Quality:  ${qualityAssessment.summary}")
             appendLine()
-            
-            // Section 1: Component Overview
-            appendLine("1. COMPONENT IDENTIFICATION")
-            appendLine("─────────────────────────────────")
-            appendLine("Component Type: ${componentInfo.componentName}")
-            appendLine("System Classification: ${componentInfo.systemType}")
-            appendLine()
-            appendLine("Structural Configuration:")
-            appendLine(componentInfo.structuralDescription)
-            appendLine()
-            appendLine("Primary Structural Members:")
-            componentInfo.structuralMembers.forEach { member ->
-                appendLine("  • $member")
-            }
-            appendLine()
-            appendLine("Geometric Complexity: ${componentInfo.geometricComplexity}")
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine("                    VISION AI ANALYSIS")
+            appendLine("═══════════════════════════════════════════════════════════════")
             appendLine()
             
-            // Section 2: Interface Analysis
-            appendLine("2. CONNECTION & INTERFACE ANALYSIS")
-            appendLine("─────────────────────────────────")
-            appendLine("Connection Summary:")
-            connectionInfo.connectionTypes.forEach { connection ->
-                appendLine("  • $connection")
-            }
+            // Stage 1: Component Overview
+            appendLine("┌─────────────────────────────────────────────────────────────┐")
+            appendLine("│ STAGE 1: COMPONENT IDENTIFICATION & GEOMETRY               │")
+            appendLine("├─────────────────────────────────────────────────────────────┤")
+            appendLine("│ Prompt: \"${getPromptForStage(1)}\"")
+            appendLine("│ Processing Time: ${stage1?.inferenceTime ?: 0}ms")
+            appendLine("└─────────────────────────────────────────────────────────────┘")
             appendLine()
-            if (connectionInfo.mountingPoints.isNotEmpty()) {
-                appendLine("Mounting/Constraint Locations:")
-                connectionInfo.mountingPoints.forEach { mount ->
-                    appendLine("  • $mount")
-                }
-                appendLine()
-            }
-            appendLine("Assembly Complexity: ${connectionInfo.assemblyComplexity}")
+            appendLine(formatAIResponse(stage1?.text))
             appendLine()
             
-            // Section 3: FEA Requirements
-            appendLine("3. FEA MODEL REQUIREMENTS")
-            appendLine("─────────────────────────────────")
-            appendLine("Critical Stress Concentration Features:")
-            stressInfo.stressConcentrations.forEach { feature ->
-                appendLine("  • $feature")
-            }
+            // Stage 2: Connections
+            appendLine("┌─────────────────────────────────────────────────────────────┐")
+            appendLine("│ STAGE 2: CONNECTION & INTERFACE ANALYSIS                   │")
+            appendLine("├─────────────────────────────────────────────────────────────┤")
+            appendLine("│ Prompt: \"${getPromptForStage(2)}\"")
+            appendLine("│ Processing Time: ${stage2?.inferenceTime ?: 0}ms")
+            appendLine("└─────────────────────────────────────────────────────────────┘")
             appendLine()
-            appendLine("Expected Loading Conditions:")
-            stressInfo.loadingConditions.forEach { load ->
-                appendLine("  • $load")
-            }
-            appendLine()
-            appendLine("High Stress Regions:")
-            appendLine(stressInfo.criticalAreas)
+            appendLine(formatAIResponse(stage2?.text))
             appendLine()
             
-            // Section 4: Simulation Recommendations
-            appendLine("4. SIMULATION RECOMMENDATIONS")
-            appendLine("─────────────────────────────────")
-            appendLine("Recommended Analysis Type: ${determineAnalysisType(stressInfo)}")
+            // Stage 3: Stress Analysis
+            appendLine("┌─────────────────────────────────────────────────────────────┐")
+            appendLine("│ STAGE 3: STRESS CONCENTRATIONS & LOADING                   │")
+            appendLine("├─────────────────────────────────────────────────────────────┤")
+            appendLine("│ Prompt: \"${getPromptForStage(3)}\"")
+            appendLine("│ Processing Time: ${stage3?.inferenceTime ?: 0}ms")
+            appendLine("└─────────────────────────────────────────────────────────────┘")
             appendLine()
-            appendLine("Mesh Requirements:")
-            appendLine("  • Global Element Size: ${determineMeshSize(componentInfo)}")
-            appendLine("  • Refinement Zones: ${stressInfo.stressConcentrations.size} regions identified")
-            appendLine("  • Contact Modeling: ${if (connectionInfo.hasContacts) "Required" else "Not required"}")
-            appendLine()
-            appendLine("Material Properties Required:")
-            appendLine("  • ${determineMaterialRequirements(stressInfo)}")
+            appendLine(formatAIResponse(stage3?.text))
             appendLine()
             
-            // Section 5: Complexity Assessment
-            appendLine("5. PROJECT COMPLEXITY ASSESSMENT")
-            appendLine("─────────────────────────────────")
-            val complexity = calculateComplexity(componentInfo, connectionInfo, stressInfo)
-            appendLine("Overall Complexity: ${complexity.level}")
-            appendLine("Estimated Setup Time: ${complexity.setupHours} hours")
-            appendLine("Estimated Solve Time: ${complexity.solveHours} hours")
-            appendLine("Recommended Engineer Level: ${complexity.engineerLevel}")
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine("                    FEA ENGINEER CHECKLIST")
+            appendLine("═══════════════════════════════════════════════════════════════")
             appendLine()
-            
-            // Section 6: Data Quality
-            appendLine("6. ANALYSIS CONFIDENCE")
-            appendLine("─────────────────────────────────")
-            val confidence = assessDataQuality(analysisResults)
-            appendLine("Vision Analysis Quality: ${confidence.overallQuality}")
-            appendLine("Information Completeness: ${confidence.completeness}%")
-            if (confidence.missingInfo.isNotEmpty()) {
-                appendLine("Additional Information Needed:")
-                confidence.missingInfo.forEach { info ->
-                    appendLine("  • $info")
-                }
+            appendLine("Based on the AI analysis above, please verify:")
+            appendLine()
+            appendLine("□ Component type and primary function identified")
+            appendLine("□ Main structural members and geometry understood")
+            appendLine("□ Connection types (bolted/welded/pinned) clear")
+            appendLine("□ Mounting points and constraints identifiable")
+            appendLine("□ Stress concentration features noted")
+            appendLine("□ Expected loading conditions determinable")
+            appendLine()
+            appendLine("Information gaps requiring clarification:")
+            qualityAssessment.missingInfo.forEach { gap ->
+                appendLine("  • $gap")
             }
             appendLine()
             
-            appendLine("═══════════════════════════════════════════════")
-            appendLine("Generated by SimSpec v1.0 | LFM2-VL-1.6B Vision Analysis")
+            // Quick reference section
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine("                    QUICK REFERENCE")
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine()
+            appendLine("Key Terms Identified:")
+            val keyTerms = extractKeyTerms(analysisResults)
+            keyTerms.forEach { term ->
+                appendLine("  • $term")
+            }
+            appendLine()
+            
+            // Complexity estimate based on simple heuristics
+            val complexity = estimateComplexity(analysisResults)
+            appendLine("Preliminary Complexity Estimate: $complexity")
+            appendLine()
+            
+            appendLine("═══════════════════════════════════════════════════════════════")
+            appendLine("Generated by SimSpec v1.0 | Model: LFM2-VL-1.6B")
+            appendLine("Note: This is an AI-assisted preliminary analysis.")
+            appendLine("Please review all findings before preparing quotation.")
+            appendLine("═══════════════════════════════════════════════════════════════")
         }
     }
     
     /**
-     * Parse component description from Stage 1 (system overview)
+     * Format AI response for readability
      */
-    private fun parseComponentDescription(text: String): ComponentInfo {
-        if (text.isBlank() || text.contains("error", ignoreCase = true)) {
-            return ComponentInfo(
-                componentName = "Unidentified Component",
-                systemType = "Analysis Pending",
-                structuralDescription = "Component identification failed - manual review required",
-                structuralMembers = listOf("Visual analysis incomplete"),
-                geometricComplexity = "Unknown"
-            )
+    private fun formatAIResponse(text: String?): String {
+        if (text.isNullOrBlank()) {
+            return "[No response received - stage may have timed out]"
         }
         
-        // Extract component name (first meaningful noun phrase)
-        val componentName = extractComponentName(text)
-        
-        // Identify structural members mentioned
-        val members = mutableListOf<String>()
-        val structuralKeywords = listOf(
-            "frame", "beam", "tube", "plate", "bracket", "shaft", "housing",
-            "support", "member", "strut", "bar", "column", "rail", "arm"
-        )
-        
-        structuralKeywords.forEach { keyword ->
-            if (text.contains(keyword, ignoreCase = true)) {
-                // Try to extract context around the keyword
-                val pattern = Regex("\\b(\\w+\\s+)?$keyword(\\s+\\w+)?", RegexOption.IGNORE_CASE)
-                pattern.findAll(text).forEach { match ->
-                    members.add(match.value.trim())
-                }
-            }
+        if (text.contains("error", ignoreCase = true) || text.contains("cancelled", ignoreCase = true)) {
+            return "[Analysis error: $text]"
         }
         
-        // Determine geometric complexity based on description
-        val geometricComplexity = when {
-            text.contains(Regex("complex|intricate|detailed", RegexOption.IGNORE_CASE)) -> "High - Multiple features"
-            text.contains(Regex("simple|basic|standard", RegexOption.IGNORE_CASE)) -> "Low - Simple geometry"
-            members.size > 5 -> "Medium-High - Multiple components"
-            members.size > 2 -> "Medium - Several components"
-            else -> "Low-Medium - Few components"
+        // Check for truncation
+        val isTruncated = !text.endsWith(".") && !text.endsWith("!") && !text.endsWith("?")
+        
+        // Wrap text nicely
+        val wrapped = wrapText(text, 60)
+        
+        return if (isTruncated) {
+            "$wrapped\n[Note: Response appears truncated]"
+        } else {
+            wrapped
         }
-        
-        // Clean up the structural description
-        val structuralDescription = text
-            .split(". ")
-            .filter { it.length > 10 }
-            .take(2)
-            .joinToString(". ")
-            .ifEmpty { "See vision analysis for structural details" }
-        
-        return ComponentInfo(
-            componentName = componentName,
-            systemType = determineSystemType(text),
-            structuralDescription = structuralDescription,
-            structuralMembers = members.ifEmpty { listOf("Structural members identified in vision analysis") },
-            geometricComplexity = geometricComplexity
-        )
     }
     
     /**
-     * Parse connection analysis from Stage 2
+     * Wrap text to specified width for better readability
      */
-    private fun parseConnectionAnalysis(text: String): ConnectionInfo {
-        if (text.isBlank() || text.contains("error", ignoreCase = true)) {
-            return ConnectionInfo(
-                connectionTypes = listOf("Connection analysis incomplete"),
-                mountingPoints = emptyList(),
-                assemblyComplexity = "Unknown",
-                hasContacts = false
-            )
-        }
+    private fun wrapText(text: String, width: Int): String {
+        val words = text.split(" ")
+        val lines = mutableListOf<String>()
+        var currentLine = StringBuilder()
         
-        val connections = mutableListOf<String>()
-        val mountingPoints = mutableListOf<String>()
-        
-        // Check for specific connection types
-        val connectionPatterns = mapOf(
-            "bolt" to "Bolted connections",
-            "weld" to "Welded joints",
-            "pin" to "Pinned connections",
-            "clamp" to "Clamped interfaces",
-            "rivet" to "Riveted joints",
-            "adhesive" to "Adhesive bonds",
-            "thread" to "Threaded connections",
-            "press" to "Press-fit connections",
-            "snap" to "Snap-fit connections"
-        )
-        
-        connectionPatterns.forEach { (keyword, description) ->
-            if (text.contains(keyword, ignoreCase = true)) {
-                // Try to extract quantity if mentioned
-                val quantityPattern = Regex("(\\d+)\\s*$keyword", RegexOption.IGNORE_CASE)
-                val match = quantityPattern.find(text)
-                if (match != null) {
-                    connections.add("$description (${match.groupValues[1]} locations)")
-                } else {
-                    connections.add(description)
-                }
+        words.forEach { word ->
+            if (currentLine.length + word.length + 1 > width) {
+                lines.add(currentLine.toString())
+                currentLine = StringBuilder(word)
+            } else {
+                if (currentLine.isNotEmpty()) currentLine.append(" ")
+                currentLine.append(word)
             }
         }
-        
-        // Extract mounting point information
-        val mountingKeywords = listOf("mount", "attach", "fix", "secure", "anchor", "support")
-        mountingKeywords.forEach { keyword ->
-            if (text.contains(keyword, ignoreCase = true)) {
-                val pattern = Regex("$keyword\\w*\\s+(?:to|at|on)?\\s+([^.]+)", RegexOption.IGNORE_CASE)
-                pattern.findAll(text).forEach { match ->
-                    val location = match.groupValues[1].take(50).trim()
-                    if (location.isNotBlank()) {
-                        mountingPoints.add(location)
-                    }
-                }
-            }
+        if (currentLine.isNotEmpty()) {
+            lines.add(currentLine.toString())
         }
         
-        // Determine assembly complexity
-        val assemblyComplexity = when {
-            connections.size >= 4 -> "High - Multiple connection types"
-            connections.size >= 2 -> "Medium - Mixed connections"
-            connections.size == 1 -> "Low - Single connection type"
-            else -> "Simple - Minimal connections"
-        }
-        
-        val hasContacts = connections.size > 1 || text.contains("contact", ignoreCase = true)
-        
-        return ConnectionInfo(
-            connectionTypes = connections.ifEmpty { listOf("Connection types per vision analysis") },
-            mountingPoints = mountingPoints,
-            assemblyComplexity = assemblyComplexity,
-            hasContacts = hasContacts
-        )
+        return lines.joinToString("\n")
     }
     
     /**
-     * Parse stress analysis from Stage 3
+     * Extract basic component name without complex parsing
      */
-    private fun parseStressAnalysis(text: String): StressAnalysisInfo {
-        if (text.isBlank() || text.contains("error", ignoreCase = true)) {
-            return StressAnalysisInfo(
-                stressConcentrations = listOf("Stress analysis incomplete"),
-                loadingConditions = listOf("Loading conditions to be determined"),
-                criticalAreas = "Critical areas require manual identification",
-                primaryLoadType = "Static"
-            )
-        }
+    private fun extractBasicComponentName(text: String): String {
+        if (text.isBlank()) return "Unidentified Component"
         
-        val stressConcentrations = mutableListOf<String>()
-        val loadingConditions = mutableListOf<String>()
-        
-        // Extract stress concentration features
-        val stressFeatures = mapOf(
-            "hole" to "Holes/openings",
-            "corner" to "Sharp corners",
-            "notch" to "Notches",
-            "groove" to "Grooves",
-            "fillet" to "Small radius fillets",
-            "thickness" to "Thickness changes",
-            "transition" to "Geometric transitions",
-            "edge" to "Sharp edges"
-        )
-        
-        stressFeatures.forEach { (keyword, description) ->
-            if (text.contains(keyword, ignoreCase = true)) {
-                stressConcentrations.add(description)
-            }
-        }
-        
-        // Extract loading conditions
-        val loadTypes = mapOf(
-            "tension" to "Tensile loading",
-            "compress" to "Compressive loading",
-            "bend" to "Bending moments",
-            "torsion" to "Torsional loading",
-            "shear" to "Shear forces",
-            "vibrat" to "Vibration/dynamic loading",
-            "impact" to "Impact loading",
-            "fatigue" to "Cyclic/fatigue loading",
-            "thermal" to "Thermal loading"
-        )
-        
-        loadTypes.forEach { (keyword, description) ->
-            if (text.contains(keyword, ignoreCase = true)) {
-                loadingConditions.add(description)
-            }
-        }
-        
-        // Extract critical areas description
-        val criticalAreas = text
-            .split(". ")
-            .find { it.contains(Regex("high stress|critical|fail", RegexOption.IGNORE_CASE)) }
-            ?.take(200)
-            ?: "Stress concentrations at geometric discontinuities"
-        
-        // Determine primary load type for analysis recommendation
-        val primaryLoadType = when {
-            loadingConditions.any { it.contains("vibration", ignoreCase = true) } -> "Dynamic"
-            loadingConditions.any { it.contains("fatigue", ignoreCase = true) } -> "Fatigue"
-            loadingConditions.any { it.contains("thermal", ignoreCase = true) } -> "Thermal-Structural"
-            loadingConditions.size > 2 -> "Combined Loading"
-            else -> "Static Structural"
-        }
-        
-        return StressAnalysisInfo(
-            stressConcentrations = stressConcentrations.ifEmpty { 
-                listOf("Geometric discontinuities identified in vision analysis") 
-            },
-            loadingConditions = loadingConditions.ifEmpty { 
-                listOf("Operational loading to be specified") 
-            },
-            criticalAreas = criticalAreas,
-            primaryLoadType = primaryLoadType
-        )
-    }
-    
-    // Data classes for structured information
-    private data class ComponentInfo(
-        val componentName: String,
-        val systemType: String,
-        val structuralDescription: String,
-        val structuralMembers: List<String>,
-        val geometricComplexity: String
-    )
-    
-    private data class ConnectionInfo(
-        val connectionTypes: List<String>,
-        val mountingPoints: List<String>,
-        val assemblyComplexity: String,
-        val hasContacts: Boolean
-    )
-    
-    private data class StressAnalysisInfo(
-        val stressConcentrations: List<String>,
-        val loadingConditions: List<String>,
-        val criticalAreas: String,
-        val primaryLoadType: String
-    )
-    
-    private data class ComplexityAssessment(
-        val level: String,
-        val setupHours: String,
-        val solveHours: String,
-        val engineerLevel: String
-    )
-    
-    private data class DataQualityAssessment(
-        val overallQuality: String,
-        val completeness: Int,
-        val missingInfo: List<String>
-    )
-    
-    // Helper methods
-    private fun extractComponentName(text: String): String {
-        // Remove common AI response patterns
-        var cleaned = text
-            .replace(Regex("^(This is|I see|It appears to be|This appears to be)\\s+", RegexOption.IGNORE_CASE), "")
-            .replace(Regex("^(a|an|the)\\s+", RegexOption.IGNORE_CASE), "")
-        
-        // Take first noun phrase or sentence fragment
-        val firstPart = cleaned.split(Regex("[,.]")).firstOrNull()?.trim() ?: cleaned
-        
-        // Limit length and capitalize
-        return firstPart
-            .take(50)
+        // Just take the first meaningful phrase
+        val cleaned = text
+            .replace(Regex("^(Stage \\d+:|This is|I see|It appears to be)\\s*", RegexOption.IGNORE_CASE), "")
             .trim()
-            .replaceFirstChar { it.titlecase() }
-            .ifEmpty { "Mechanical Component" }
-    }
-    
-    private fun determineSystemType(text: String): String {
-        return when {
-            text.contains(Regex("vehicle|automotive|car", RegexOption.IGNORE_CASE)) -> "Automotive System"
-            text.contains(Regex("aerospace|aircraft|flight", RegexOption.IGNORE_CASE)) -> "Aerospace System"
-            text.contains(Regex("machine|industrial|manufacturing", RegexOption.IGNORE_CASE)) -> "Industrial Machinery"
-            text.contains(Regex("consumer|product|device", RegexOption.IGNORE_CASE)) -> "Consumer Product"
-            text.contains(Regex("structural|building|construction", RegexOption.IGNORE_CASE)) -> "Structural System"
-            else -> "Mechanical System"
-        }
-    }
-    
-    private fun determineAnalysisType(stressInfo: StressAnalysisInfo): String {
-        return stressInfo.primaryLoadType + " Analysis"
-    }
-    
-    private fun determineMeshSize(componentInfo: ComponentInfo): String {
-        return when {
-            componentInfo.geometricComplexity.contains("High") -> "Fine (2-5mm typical)"
-            componentInfo.geometricComplexity.contains("Low") -> "Coarse (10-20mm typical)"
-            else -> "Medium (5-10mm typical)"
-        }
-    }
-    
-    private fun determineMaterialRequirements(stressInfo: StressAnalysisInfo): String {
-        return when {
-            stressInfo.primaryLoadType.contains("Fatigue") -> "Full S-N curve data required"
-            stressInfo.primaryLoadType.contains("Dynamic") -> "Damping coefficients and dynamic moduli"
-            stressInfo.primaryLoadType.contains("Thermal") -> "Thermal expansion and conductivity"
-            else -> "Young's modulus, Poisson's ratio, yield strength"
-        }
-    }
-    
-    private fun calculateComplexity(
-        componentInfo: ComponentInfo,
-        connectionInfo: ConnectionInfo,
-        stressInfo: StressAnalysisInfo
-    ): ComplexityAssessment {
-        val complexityScore = listOf(
-            if (componentInfo.geometricComplexity.contains("High")) 3 else if (componentInfo.geometricComplexity.contains("Low")) 1 else 2,
-            if (connectionInfo.assemblyComplexity.contains("High")) 3 else if (connectionInfo.assemblyComplexity.contains("Low")) 1 else 2,
-            if (stressInfo.loadingConditions.size > 3) 3 else if (stressInfo.loadingConditions.size > 1) 2 else 1
-        ).average()
         
-        return when {
-            complexityScore >= 2.5 -> ComplexityAssessment(
-                level = "High Complexity",
-                setupHours = "16-24",
-                solveHours = "4-8",
-                engineerLevel = "Senior FEA Specialist"
-            )
-            complexityScore >= 1.5 -> ComplexityAssessment(
-                level = "Medium Complexity",
-                setupHours = "8-16",
-                solveHours = "2-4",
-                engineerLevel = "FEA Engineer"
-            )
-            else -> ComplexityAssessment(
-                level = "Low Complexity",
-                setupHours = "4-8",
-                solveHours = "1-2",
-                engineerLevel = "Junior FEA Engineer"
-            )
-        }
+        // Take up to first comma or period
+        val firstPhrase = cleaned.split(Regex("[,.]")).firstOrNull()?.trim() ?: cleaned
+        
+        return firstPhrase.take(50).ifEmpty { "Component" }
     }
     
-    private fun assessDataQuality(results: List<MainViewModel.AnalysisResult>): DataQualityAssessment {
+    /**
+     * Get the prompt used for a specific stage
+     */
+    private fun getPromptForStage(stage: Int): String {
+        val prompts = listOf(
+            "Describe this mechanical system. What are the main structural members and their approximate geometry?",
+            "How are components joined together? Describe connection types: bolted, welded, pinned, or clamped. Where are the mounting points?",
+            "What geometric features create stress concentrations? Sharp corners, holes, thickness changes? What loads would this experience in operation?"
+        )
+        return prompts.getOrNull(stage - 1)?.take(80) + "..." ?: "Unknown prompt"
+    }
+    
+    /**
+     * Simple quality assessment
+     */
+    private fun assessAnalysisQuality(results: List<MainViewModel.AnalysisResult>): QualityAssessment {
         val missingInfo = mutableListOf<String>()
-        var completeness = 100
+        var successCount = 0
         
         results.forEach { result ->
-            if (result.text.contains("error", ignoreCase = true) || 
-                result.text.contains("timeout", ignoreCase = true) ||
-                result.text.length < 20) {
-                missingInfo.add("Stage ${result.step} analysis incomplete")
-                completeness -= 33
+            if (result.text.length > 50 && 
+                !result.text.contains("error", ignoreCase = true) &&
+                !result.text.contains("timeout", ignoreCase = true)) {
+                successCount++
+            } else {
+                missingInfo.add("Stage ${result.step} incomplete or failed")
             }
         }
         
-        // Check for specific missing information
+        // Check for common missing elements in all text
         val allText = results.joinToString(" ") { it.text }
-        if (!allText.contains(Regex("bolt|weld|pin|clamp|rivet", RegexOption.IGNORE_CASE))) {
-            missingInfo.add("Connection types not clearly identified")
-            completeness -= 10
-        }
-        if (!allText.contains(Regex("steel|aluminum|plastic|composite", RegexOption.IGNORE_CASE))) {
-            missingInfo.add("Material specification needed")
-        }
-        if (!allText.contains(Regex("\\d+\\s*(mm|cm|inch|meter)", RegexOption.IGNORE_CASE))) {
-            missingInfo.add("Dimensional information needed")
+        
+        if (!allText.contains(Regex("bolt|screw|weld|pin|rivet|glue|attach", RegexOption.IGNORE_CASE))) {
+            missingInfo.add("Connection methods not clearly identified")
         }
         
-        val quality = when {
-            completeness >= 90 -> "Excellent"
-            completeness >= 70 -> "Good"
-            completeness >= 50 -> "Adequate"
-            else -> "Limited"
+        if (!allText.contains(Regex("\\d+", RegexOption.IGNORE_CASE))) {
+            missingInfo.add("No quantitative information (counts, dimensions)")
         }
         
-        return DataQualityAssessment(
-            overallQuality = quality,
-            completeness = completeness.coerceAtLeast(0),
-            missingInfo = missingInfo
-        )
+        if (!allText.contains(Regex("steel|aluminum|plastic|metal|composite|material", RegexOption.IGNORE_CASE))) {
+            missingInfo.add("Material not specified or inferred")
+        }
+        
+        val summary = when (successCount) {
+            3 -> "Complete (${successCount}/3 stages)"
+            2 -> "Partial (${successCount}/3 stages)"
+            1 -> "Limited (${successCount}/3 stages)"
+            else -> "Failed"
+        }
+        
+        return QualityAssessment(summary, missingInfo)
     }
+    
+    /**
+     * Extract key engineering terms mentioned
+     */
+    private fun extractKeyTerms(results: List<MainViewModel.AnalysisResult>): List<String> {
+        val terms = mutableSetOf<String>()
+        val allText = results.joinToString(" ") { it.text }.lowercase()
+        
+        // Engineering-relevant terms to look for
+        val termPatterns = mapOf(
+            "frame" to "Frame structure",
+            "bracket" to "Brackets",
+            "weld" to "Welded joints",
+            "bolt" to "Bolted connections",
+            "hole" to "Holes/openings",
+            "corner" to "Corner features",
+            "bend" to "Bends/curves",
+            "support" to "Support structures",
+            "mount" to "Mounting points",
+            "bearing" to "Bearings",
+            "shaft" to "Shafts",
+            "gear" to "Gears",
+            "spring" to "Springs",
+            "cylinder" to "Cylinders"
+        )
+        
+        termPatterns.forEach { (keyword, term) ->
+            if (allText.contains(keyword)) {
+                terms.add(term)
+            }
+        }
+        
+        return terms.take(6).ifEmpty { listOf("No specific terms identified") }
+    }
+    
+    /**
+     * Simple complexity estimation
+     */
+    private fun estimateComplexity(results: List<MainViewModel.AnalysisResult>): String {
+        val allText = results.joinToString(" ") { it.text }
+        
+        // Count complexity indicators
+        val connectionCount = Regex("bolt|weld|pin|rivet|screw|clamp", RegexOption.IGNORE_CASE).findAll(allText).count()
+        val featureCount = Regex("hole|corner|bend|edge|groove|notch", RegexOption.IGNORE_CASE).findAll(allText).count()
+        val loadCount = Regex("tension|compression|bend|twist|vibrat|force|load", RegexOption.IGNORE_CASE).findAll(allText).count()
+        
+        val totalScore = connectionCount + featureCount + loadCount
+        
+        return when {
+            totalScore >= 10 -> "High - Complex geometry with multiple connections and loading modes"
+            totalScore >= 5 -> "Medium - Standard component with several features"
+            totalScore >= 2 -> "Low - Simple component with basic features"
+            else -> "Basic - Minimal complexity identified"
+        }
+    }
+    
+    /**
+     * Data classes for structured information
+     */
+    private data class QualityAssessment(
+        val summary: String,
+        val missingInfo: List<String>
+    )
     
     /**
      * Generate unique request ID
      */
     private fun generateRequestId(): String {
         val timestamp = System.currentTimeMillis().toString(36).uppercase()
-        val random = Random.nextInt(1000, 9999).toString(16).uppercase()
+        val random = Random.nextInt(100, 999)
         return "FEA-$timestamp-$random"
     }
 }
