@@ -1,0 +1,51 @@
+# Build outputs
+*.apk
+*.aab
+build/
+**/build/
+.gradle/
+local.properties
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+**/logs/*.txt
+
+# Model files (too large for git)
+models/*.bundle
+models/*.aar
+
+# Test outputs
+extracted_frames/
+videos/
+reports/*.txt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Android specific
+*.dex
+*.ap_
+*.apk
+*.aab
+proguard/
+lint/
+captures/
