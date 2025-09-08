@@ -160,16 +160,13 @@ object LeapService {
                     Log.i(TAG, "🚀 Starting response generation with default settings...")
                     val responseFlow = conversation!!.generateResponse(userMessage)
                     
-                    // Collect streaming response with simplified collection
+                    // Collect streaming response - let model complete naturally  
                     var isGenerationStarted = false
                     var chunkCount = 0
-                    val maxChunks = if (stage == 3) 25 else 50 // Even more aggressive for stage 3
                     Log.d(TAG, "📡 Starting response collection...")
                     
-                    // Use take() to limit the flow to prevent infinite generation
-                    responseFlow
-                        .take(maxChunks + 1) // +1 to allow for Complete message
-                        .collect { response: MessageResponse ->
+                    // Collect all chunks until model signals completion
+                    responseFlow.collect { response: MessageResponse ->
                             when (response) {
                                 is MessageResponse.Chunk -> {
                                     chunkCount++
@@ -182,13 +179,6 @@ object LeapService {
                                     
                                     analysisResult = (analysisResult ?: "") + response.text
                                     Log.v(TAG, "📨 Stage $stage Chunk $chunkCount: ${response.text.take(50)}...")
-                                    
-                                    // Early exit if we have enough content (more aggressive for stage 3)
-                                    val targetLength = if (stage == 3) 300 else 500
-                                    if (analysisResult!!.length >= targetLength) {
-                                        Log.i(TAG, "🏁 Stage $stage reached sufficient length: ${analysisResult!!.length} chars")
-                                        return@collect
-                                    }
                                 }
                             is MessageResponse.Complete -> {
                                 Log.i(TAG, "🏁 Stage $stage generation complete!")
@@ -220,24 +210,6 @@ object LeapService {
                                 Log.v(TAG, "Reasoning chunk received")
                             }
                         }
-                    }
-                    
-                    // Handle early termination case
-                    if (analysisResult != null && analysisResult!!.isNotBlank() && chunkCount >= maxChunks) {
-                        Log.i(TAG, "🏁 Stage $stage completed with flow limitation after $chunkCount chunks")
-                        // Add to conversation history 
-                        val terminatedResponse = ChatMessage(
-                            role = ChatMessage.Role.ASSISTANT,
-                            content = listOf(ChatMessageContent.Text(analysisResult!!))
-                        )
-                        analysisHistory.add(terminatedResponse)
-                        
-                        stats = mapOf<String, Any>(
-                            "stage" to stage,
-                            "chunks_received" to chunkCount,
-                            "flow_limited" to true,
-                            "result_length" to analysisResult!!.length
-                        )
                     }
                     
                 } catch (e: Exception) {
