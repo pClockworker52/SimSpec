@@ -297,7 +297,7 @@ private fun PhotoCaptureState(
                 )
             ) {
                 Text(
-                    text = getInstructionText(uiState.photoState, uiState.currentPhotoStep),
+                    text = getInstructionText(uiState.photoState, uiState.currentPhotoStage),
                     color = Color.White,
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.bodyMedium,
