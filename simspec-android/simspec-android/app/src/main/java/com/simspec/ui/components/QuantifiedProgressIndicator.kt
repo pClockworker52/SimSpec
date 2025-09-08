@@ -36,8 +36,9 @@ fun QuantifiedProgressIndicator(
     var elapsedSeconds by remember { mutableIntStateOf(0) }
     
     // Timer effect - only run when analysis has actually started
-    LaunchedEffect(current, timerActive, analysisStarted) {
-        if (timerActive && analysisStarted && current >= 0 && current <= total) {
+    LaunchedEffect(analysisStarted, timerActive) {
+        if (timerActive && analysisStarted) {
+            // Start timer only when analysis begins, regardless of current stage
             while (elapsedSeconds < totalTimeSeconds && analysisStarted && timerActive) {
                 delay(1000L)
                 elapsedSeconds += 1

@@ -55,7 +55,7 @@ class PhotoAnalysisProcessor(
                     return@launch
                 }
                 
-                // Step 1: Resize photos for optimal performance
+                // Stage 1: Resize photos for optimal performance
                 Log.d(TAG, "🖼️ Resizing ${photos.size} photos to 512x512...")
                 val resizedPhotos = withContext(Dispatchers.IO) {
                     try {
@@ -71,7 +71,7 @@ class PhotoAnalysisProcessor(
                 
                 Log.i(TAG, "✅ Photo resizing completed: ${resizedPhotos.size} photos ready for analysis")
                 
-                // Step 2: Run analysis on each photo with corresponding prompt
+                // Stage 2: Run analysis on each photo with corresponding prompt
                 for ((index, photo) in resizedPhotos.withIndex()) {
                     val currentPrompt = prompts[index]
                     val stage = index + 1
@@ -120,7 +120,7 @@ class PhotoAnalysisProcessor(
                     kotlinx.coroutines.delay(1000L)
                 }
                 
-                // Step 3: Complete analysis
+                // Stage 3: Complete analysis
                 Log.i(TAG, "✅ Complete photo analysis workflow finished")
                 viewModel.setAnalysisComplete()
                 viewModel.completePhotoAnalysis()

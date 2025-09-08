@@ -25,9 +25,9 @@ object ExportService {
         }
         
         // Get raw results from each stage
-        val stage1 = analysisResults.find { it.step == 1 }
-        val stage2 = analysisResults.find { it.step == 2 }
-        val stage3 = analysisResults.find { it.step == 3 }
+        val stage1 = analysisResults.find { it.stage == 1 }
+        val stage2 = analysisResults.find { it.stage == 2 }
+        val stage3 = analysisResults.find { it.stage == 3 }
         
         // Generate metadata
         val requestId = generateRequestId()
@@ -224,7 +224,7 @@ object ExportService {
                 !result.text.contains("timeout", ignoreCase = true)) {
                 successCount++
             } else {
-                missingInfo.add("Stage ${result.step} incomplete or failed")
+                missingInfo.add("Stage ${result.stage} incomplete or failed")
             }
         }
         

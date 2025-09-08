@@ -186,14 +186,14 @@ fun PhotoCaptureScreen(
                         },
                         onTriggerCapture = {
                             imageCapture?.let { capture ->
-                                Log.d("PhotoCapture", "📸 Taking photo ${uiState.currentPhotoStep}")
+                                Log.d("PhotoCapture", "📸 Taking photo ${uiState.currentPhotoStage}")
                                 
                                 // Capture image in memory instead of to file  
                                 capture.takePicture(
                                     ContextCompat.getMainExecutor(context),
                                     object : ImageCapture.OnImageCapturedCallback() {
                                         override fun onCaptureSuccess(image: androidx.camera.core.ImageProxy) {
-                                            Log.d("PhotoCapture", "✅ Photo ${uiState.currentPhotoStep} captured successfully")
+                                            Log.d("PhotoCapture", "✅ Photo ${uiState.currentPhotoStage} captured successfully")
                                             
                                             // Convert ImageProxy to Bitmap
                                             val bitmap = com.simspec.utils.FrameExtractor.imageProxyToBitmap(image)
@@ -343,7 +343,7 @@ private fun PhotoCaptureState(
                 
                 // Progress indicator (photo capture progress)
                 QuantifiedProgressIndicator(
-                    current = uiState.currentPhotoStep - 1,
+                    current = uiState.currentPhotoStage - 1,
                     total = 3,
                     stageTimeSeconds = 10, // Quick photo capture, 10s per photo
                     timerActive = false, // No timer during photo capture
@@ -354,7 +354,7 @@ private fun PhotoCaptureState(
                 
                 Text(
                     text = """
-                        Photo ${uiState.currentPhotoStep} of 3
+                        Photo ${uiState.currentPhotoStage} of 3
                         
                         ${getDetailedInstructions(uiState.photoState)}
                     """.trimIndent(),
@@ -597,7 +597,7 @@ private fun CameraPreviewForPhotos(
     )
 }
 
-private fun getInstructionText(photoState: MainViewModel.PhotoState, currentStep: Int): String {
+private fun getInstructionText(photoState: MainViewModel.PhotoState, currentStage: Int): String {
     return when (photoState) {
         MainViewModel.PhotoState.IDLE -> "📸 Ready to start 3-photo analysis"
         MainViewModel.PhotoState.CAPTURE_1 -> "📸 Photo 1: WIDE VIEW - Full component overview"

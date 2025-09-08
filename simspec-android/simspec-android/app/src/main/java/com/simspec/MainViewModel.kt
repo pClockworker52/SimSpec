@@ -37,19 +37,19 @@ class MainViewModel : ViewModel() {
         val isAnalyzing: Boolean = false,
         val analysisResults: List<AnalysisResult> = emptyList(),
         val currentQuestion: EngineeringQuestion? = null,
-        val analysisProgress: Pair<Int, Int> = 0 to 3, // current step to total steps
+        val analysisProgress: Pair<Int, Int> = 0 to 3, // current stage to total stages
         val errorMessage: String? = null,
         val isAnalysisComplete: Boolean = false,
         // Photo capture workflow state
         val photoState: PhotoState = PhotoState.IDLE,
-        val currentPhotoStep: Int = 1, // 1, 2, or 3
+        val currentPhotoStage: Int = 1, // 1, 2, or 3
         val capturedPhotos: List<Bitmap> = emptyList(),
         val processingProgress: String? = null
     )
     
     // Analysis result data class
     data class AnalysisResult(
-        val step: Int,
+        val stage: Int,
         val text: String,
         val inferenceTime: Long,
         val timestamp: Long = System.currentTimeMillis()
@@ -77,19 +77,19 @@ class MainViewModel : ViewModel() {
      */
     fun addAnalysisResult(resultText: String, inferenceTime: Long) {
         val currentResults = _uiState.value.analysisResults
-        val newStep = currentResults.size + 1
+        val newStage = currentResults.size + 1
         
         val newResult = AnalysisResult(
-            step = newStep,
+            stage = newStage,
             text = resultText,
             inferenceTime = inferenceTime
         )
         
-        Log.d(TAG, "Adding analysis result - Step $newStep: ${resultText.take(50)}...")
+        Log.d(TAG, "Adding analysis result - Stage $newStage: ${resultText.take(50)}...")
         
         _uiState.value = _uiState.value.copy(
             analysisResults = currentResults + newResult,
-            analysisProgress = newStep to 3,
+            analysisProgress = newStage to 3,
             errorMessage = null
         )
     }
@@ -194,11 +194,11 @@ class MainViewModel : ViewModel() {
         return buildString {
             appendLine("SimSpec Analysis Report")
             appendLine("Generated: ${System.currentTimeMillis()}")
-            appendLine("Steps Completed: ${results.size}/3")
+            appendLine("Stages Completed: ${results.size}/3")
             appendLine()
             
             results.forEachIndexed { index, result ->
-                appendLine("Step ${result.step}:")
+                appendLine("Stage ${result.stage}:")
                 appendLine(result.text)
                 appendLine("Inference Time: ${result.inferenceTime}ms")
                 appendLine()
@@ -225,7 +225,7 @@ class MainViewModel : ViewModel() {
             mapOf("status" to "No data")
         } else {
             mapOf(
-                "total_steps" to results.size,
+                "total_stages" to results.size,
                 "avg_inference_time_ms" to results.map { it.inferenceTime }.average().toInt(),
                 "min_inference_time_ms" to (results.minOfOrNull { it.inferenceTime } ?: 0L),
                 "max_inference_time_ms" to (results.maxOfOrNull { it.inferenceTime } ?: 0L),
@@ -238,19 +238,19 @@ class MainViewModel : ViewModel() {
     // Photo Capture Workflow Methods
     
     /**
-     * Capture a photo and advance to next step
+     * Capture a photo and advance to next stage
      */
     fun capturePhoto(photoBitmap: Bitmap) {
-        val currentStep = _uiState.value.currentPhotoStep
+        val currentStage = _uiState.value.currentPhotoStage
         val newPhotos = _uiState.value.capturedPhotos + photoBitmap
         
-        Log.d(TAG, "📸 Photo $currentStep captured, total photos: ${newPhotos.size}")
+        Log.d(TAG, "📸 Photo $currentStage captured, total photos: ${newPhotos.size}")
         
-        when (currentStep) {
+        when (currentStage) {
             1 -> {
                 _uiState.value = _uiState.value.copy(
                     photoState = PhotoState.CAPTURE_2,
-                    currentPhotoStep = 2,
+                    currentPhotoStage = 2,
                     capturedPhotos = newPhotos,
                     errorMessage = null
                 )
@@ -258,7 +258,7 @@ class MainViewModel : ViewModel() {
             2 -> {
                 _uiState.value = _uiState.value.copy(
                     photoState = PhotoState.CAPTURE_3,
-                    currentPhotoStep = 3,
+                    currentPhotoStage = 3,
                     capturedPhotos = newPhotos
                 )
             }
@@ -281,7 +281,7 @@ class MainViewModel : ViewModel() {
         Log.d(TAG, "Starting 3-photo capture workflow")
         _uiState.value = _uiState.value.copy(
             photoState = PhotoState.CAPTURE_1,
-            currentPhotoStep = 1,
+            currentPhotoStage = 1,
             capturedPhotos = emptyList(),
             errorMessage = null
         )
@@ -316,7 +316,7 @@ class MainViewModel : ViewModel() {
         Log.i(TAG, "Resetting photo workflow")
         _uiState.value = _uiState.value.copy(
             photoState = PhotoState.IDLE,
-            currentPhotoStep = 1,
+            currentPhotoStage = 1,
             capturedPhotos = emptyList(),
             processingProgress = null,
             analysisResults = emptyList(),

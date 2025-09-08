@@ -30,14 +30,14 @@ fun AnalysisResultCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Step header
+            // Stage header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Step ${result.step}",
+                    text = "Stage ${result.stage}",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary

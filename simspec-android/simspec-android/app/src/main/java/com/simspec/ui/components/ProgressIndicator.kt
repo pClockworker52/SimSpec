@@ -111,7 +111,7 @@ fun ProgressIndicator(
             
             Spacer(modifier = Modifier.height(4.dp))
             
-            // Step indicators
+            // Stage indicators
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -150,7 +150,7 @@ fun ProgressIndicator(
             Text(
                 text = when {
                     current == 0 -> "Ready to analyze"
-                    current < total -> "Step $current completed"
+                    current < total -> "Stage $current completed"
                     else -> "Analysis complete"
                 },
                 style = MaterialTheme.typography.labelSmall,
