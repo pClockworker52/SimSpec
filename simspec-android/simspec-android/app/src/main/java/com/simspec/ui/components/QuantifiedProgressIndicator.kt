@@ -34,11 +34,13 @@ fun QuantifiedProgressIndicator(
     // Calculate time-based progress
     val totalTimeSeconds = total * stageTimeSeconds
     var elapsedSeconds by remember { mutableIntStateOf(0) }
+    var timerStarted by remember { mutableStateOf(false) }
     
-    // Timer effect - only run when analysis has actually started
+    // Timer effect - start only once when analysis begins
     LaunchedEffect(analysisStarted, timerActive) {
-        if (timerActive && analysisStarted) {
-            // Start timer only when analysis begins, regardless of current stage
+        if (timerActive && analysisStarted && !timerStarted) {
+            // Start timer only once when analysis begins
+            timerStarted = true
             while (elapsedSeconds < totalTimeSeconds && analysisStarted && timerActive) {
                 delay(1000L)
                 elapsedSeconds += 1
@@ -52,6 +54,7 @@ fun QuantifiedProgressIndicator(
         } else if (!analysisStarted || !timerActive) {
             // Reset timer when analysis hasn't started or timer is inactive
             elapsedSeconds = 0
+            timerStarted = false
         }
     }
     
@@ -110,8 +113,11 @@ fun QuantifiedProgressIndicator(
                     color = Color.White,
                     fontWeight = FontWeight.Medium
                 )
+                
+                Spacer(modifier = Modifier.width(16.dp))
+                
                 Text(
-                    text = if (current > 0 && current <= total) {
+                    text = if (current > 0 && current <= total && timerStarted) {
                         val remainingTime = totalTimeSeconds - elapsedSeconds
                         "${formatTime(remainingTime)} remaining"
                     } else if (current >= total) {
