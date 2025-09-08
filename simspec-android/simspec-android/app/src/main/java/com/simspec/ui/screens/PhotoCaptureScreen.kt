@@ -39,7 +39,7 @@ import androidx.lifecycle.LifecycleOwner
 import coil3.compose.AsyncImage
 import com.simspec.MainViewModel
 import com.simspec.ui.components.AnalysisResultCard
-import com.simspec.ui.components.ProgressIndicator
+import com.simspec.ui.components.QuantifiedProgressIndicator
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -341,10 +341,11 @@ private fun PhotoCaptureState(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Progress indicator
-                ProgressIndicator(
+                // Progress indicator (photo capture progress)
+                QuantifiedProgressIndicator(
                     current = uiState.currentPhotoStep - 1,
                     total = 3,
+                    stageTimeSeconds = 10, // Quick photo capture, 10s per photo
                     modifier = Modifier.fillMaxWidth()
                 )
                 
@@ -492,16 +493,17 @@ private fun AnalyzingState(
                     }
                 }
                 
-                // Progress indicator
-                ProgressIndicator(
+                // Quantified analysis progress with time estimates
+                QuantifiedProgressIndicator(
                     current = uiState.analysisProgress.first,
                     total = uiState.analysisProgress.second,
+                    stageTimeSeconds = 40, // 40 seconds per analysis stage
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
                 
-                // Processing message
+                // Current stage message
                 if (uiState.processingProgress != null) {
                     Card(
                         modifier = Modifier
@@ -515,14 +517,17 @@ private fun AnalyzingState(
                             modifier = Modifier.padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            CircularProgressIndicator(
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null,
                                 modifier = Modifier.size(24.dp),
-                                strokeWidth = 3.dp
+                                tint = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = uiState.processingProgress,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
                             )
                         }
                     }

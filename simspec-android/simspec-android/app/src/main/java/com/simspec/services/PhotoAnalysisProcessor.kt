@@ -26,18 +26,18 @@ class PhotoAnalysisProcessor(
     }
     
     /**
-     * FEA-focused prompts designed for professional engineering analysis
-     * Progressive complexity: System Overview → Connections → Critical Features
+     * General engineering analysis prompts - accessible and comprehensive
+     * Progressive focus: Identification → Connections → Stress Analysis
      */
     private val prompts = listOf(
-        // Stage 1 - System Overview (15-17 words)
-        "Describe this mechanical system. What are the main structural members and their approximate geometry?",
+        // Stage 1 - Component identification (17 words)
+        "What is this object? List all visible parts and main structures. Metal, plastic, or composite materials?",
         
-        // Stage 2 - Interfaces & Connections (20-22 words)  
-        "How are components joined together? Describe connection types: bolted, welded, pinned, or clamped. Where are the mounting points?",
+        // Stage 2 - Connection analysis (20 words)  
+        "How are parts joined? Look for screws, bolts, welds, clips, adhesive. Where are fixed points and moving joints?",
         
-        // Stage 3 - Critical Features (25-27 words)
-        "What geometric features create stress concentrations? Sharp corners, holes, thickness changes? What loads would this experience in operation? Tension, bending, torsion, vibration?"
+        // Stage 3 - Stress features (23 words)
+        "Identify thin sections, holes, sharp corners, sudden size changes. What forces act on this? Where might stress concentrate?"
     )
     
     /**
