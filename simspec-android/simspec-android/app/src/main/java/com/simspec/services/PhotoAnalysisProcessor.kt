@@ -78,7 +78,6 @@ class PhotoAnalysisProcessor(
                     
                     Log.i(TAG, "🎯 Starting analysis stage $stage/${prompts.size}")
                     Log.d(TAG, "🤖 Prompt: ${currentPrompt.take(100)}...")
-                    viewModel.updateProcessingProgress("Running analysis stage $stage/${prompts.size}...")
                     
                     try {
                         Log.d(TAG, "🧠 Calling LeapService.analyzeImage for stage $stage...")

@@ -500,40 +500,13 @@ private fun AnalyzingState(
                     total = uiState.analysisProgress.second,
                     stageTimeSeconds = 40, // 40 seconds per analysis stage
                     timerActive = true, // Timer active during analysis
+                    analysisStarted = uiState.photoState == MainViewModel.PhotoState.ANALYZING, // Only start timer when analyzing
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
                 
-                // Current stage message
-                if (uiState.processingProgress != null) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = uiState.processingProgress,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
+                // Remove redundant processing message - progress bar is sufficient
                 
                 // Results list
                 LazyColumn(
