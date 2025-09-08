@@ -26,18 +26,18 @@ class PhotoAnalysisProcessor(
     }
     
     /**
-     * General engineering analysis prompts - accessible and comprehensive
-     * Progressive focus: Identification → Connections → Stress Analysis
+     * Progressive focal length analysis prompts
+     * Wide View → Medium View → Close-up with different response formats
      */
     private val prompts = listOf(
-        // Stage 1 - Component identification (17 words)
-        "What is this object? List all visible parts and main structures. Metal, plastic, or composite materials?",
+        // Stage 1 - WIDE VIEW: Context & Overview (prose for system understanding)
+        "Describe what you see. What does this do? How big? What environment? What forces or loads would it experience?",
         
-        // Stage 2 - Connection analysis (20 words)  
-        "How are parts joined? Look for screws, bolts, welds, clips, adhesive. Where are fixed points and moving joints?",
+        // Stage 2 - MEDIUM VIEW: Inventory & Assembly (structured lists)
+        "List: PARTS:[visible components] FASTENERS:[bolts/screws/welds] JOINTS:[fixed/rotating/sliding] MOUNTING:[how attached]",
         
-        // Stage 3 - Stress features (23 words)
-        "Identify thin sections, holes, sharp corners, sudden size changes. What forces act on this? Where might stress concentrate?"
+        // Stage 3 - CLOSE-UP: Focus Point Analysis (targeted detail)
+        "CENTER FOCUS: What specific feature is centered? Is it: bolt/weld/hole/corner? Load path through this point? Failure risk?"
     )
     
     /**

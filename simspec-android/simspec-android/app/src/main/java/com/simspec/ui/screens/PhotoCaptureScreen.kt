@@ -627,19 +627,19 @@ private fun CameraPreviewForPhotos(
 private fun getInstructionText(photoState: MainViewModel.PhotoState, currentStep: Int): String {
     return when (photoState) {
         MainViewModel.PhotoState.IDLE -> "📸 Ready to start 3-photo analysis"
-        MainViewModel.PhotoState.CAPTURE_1 -> "📸 Photo 1: Capture overview of component"
-        MainViewModel.PhotoState.CAPTURE_2 -> "📸 Photo 2: Capture connections & joints"
-        MainViewModel.PhotoState.CAPTURE_3 -> "📸 Photo 3: Capture problem areas"
+        MainViewModel.PhotoState.CAPTURE_1 -> "📸 Photo 1: WIDE VIEW - Full component overview"
+        MainViewModel.PhotoState.CAPTURE_2 -> "📸 Photo 2: MEDIUM VIEW - Parts and connections"
+        MainViewModel.PhotoState.CAPTURE_3 -> "📸 Photo 3: CLOSE-UP - Critical feature detail"
         else -> "📸 Photo capture complete"
     }
 }
 
 private fun getDetailedInstructions(photoState: MainViewModel.PhotoState): String {
     return when (photoState) {
-        MainViewModel.PhotoState.IDLE -> "Take 3 photos of the engineering component from different angles for comprehensive analysis."
-        MainViewModel.PhotoState.CAPTURE_1 -> "Position the camera to show the overall component. Include the complete structure and its general shape."
-        MainViewModel.PhotoState.CAPTURE_2 -> "Focus on connections, joints, welds, bolts, or any interfaces between parts."
-        MainViewModel.PhotoState.CAPTURE_3 -> "Capture any areas of concern, wear, damage, or critical stress points."
+        MainViewModel.PhotoState.IDLE -> "Take 3 photos using progressive focal lengths for comprehensive engineering analysis."
+        MainViewModel.PhotoState.CAPTURE_1 -> "WIDE VIEW: Step back to capture the complete component in context. Show size, environment, and overall system."
+        MainViewModel.PhotoState.CAPTURE_2 -> "MEDIUM VIEW: Move closer to show parts, fasteners, joints, and how components are assembled together."
+        MainViewModel.PhotoState.CAPTURE_3 -> "CLOSE-UP: Focus tightly on one critical feature - a bolt, weld, hole, or corner that's important for analysis."
         else -> "All photos captured successfully."
     }
 }
