@@ -16,11 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 
 /**
- * Quantified progress indicator that shows time-based progress for analysis stages
- * Each stage is estimated at ~40 seconds, so total time is ~120 seconds
+ * Simple progress indicator for analysis stages - no timer complexity
  */
 @Composable
 fun QuantifiedProgressIndicator(
@@ -31,54 +29,13 @@ fun QuantifiedProgressIndicator(
     timerActive: Boolean = true,
     analysisStarted: Boolean = false
 ) {
-    // Calculate time-based progress
-    val totalTimeSeconds = total * stageTimeSeconds
-    var elapsedSeconds by remember { mutableIntStateOf(0) }
-    var timerStarted by remember { mutableStateOf(false) }
-    
-    // Timer effect - start only once when analysis begins
-    LaunchedEffect(analysisStarted, timerActive) {
-        if (timerActive && analysisStarted && !timerStarted) {
-            // Start timer only once when analysis begins
-            timerStarted = true
-            while (elapsedSeconds < totalTimeSeconds && analysisStarted && timerActive) {
-                delay(1000L)
-                elapsedSeconds += 1
-                
-                // Cap elapsed time to not exceed total expected time
-                if (elapsedSeconds >= totalTimeSeconds) {
-                    elapsedSeconds = totalTimeSeconds
-                    break
-                }
-            }
-        } else if (!analysisStarted || !timerActive) {
-            // Reset timer when analysis hasn't started or timer is inactive
-            elapsedSeconds = 0
-            timerStarted = false
-        }
-    }
-    
-    // Calculate progress percentage
-    val timeProgress = if (current == 0) {
-        0f
-    } else if (current >= total) {
-        1f
-    } else if (!timerActive) {
-        // For photo capture mode, just show step-based progress
-        current.toFloat() / total.toFloat()
-    } else {
-        // For analysis mode, base progress on stages completed + time in current stage
-        val completedStages = current - 1
-        val baseProgress = completedStages.toFloat() / total.toFloat()
-        val currentStageProgress = minOf(elapsedSeconds % stageTimeSeconds, stageTimeSeconds).toFloat() / stageTimeSeconds.toFloat()
-        val currentStageWeight = 1f / total.toFloat()
-        baseProgress + (currentStageProgress * currentStageWeight)
-    }
+    // Simple stage-based progress
+    val progress = current.toFloat() / total.toFloat()
     
     val animatedProgress by animateFloatAsState(
-        targetValue = timeProgress,
+        targetValue = progress,
         animationSpec = tween(durationMillis = 300),
-        label = "timeProgress"
+        label = "progress"
     )
     
     val progressColor by animateColorAsState(
@@ -101,7 +58,7 @@ fun QuantifiedProgressIndicator(
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            // Progress text with time estimation
+            // Progress text
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -117,13 +74,11 @@ fun QuantifiedProgressIndicator(
                 Spacer(modifier = Modifier.width(16.dp))
                 
                 Text(
-                    text = if (current > 0 && current <= total && timerStarted) {
-                        val remainingTime = totalTimeSeconds - elapsedSeconds
-                        "${formatTime(remainingTime)} remaining"
-                    } else if (current >= total) {
-                        "Complete"
-                    } else {
-                        "${formatTime(totalTimeSeconds)} estimated"
+                    text = when {
+                        current >= total -> "Complete"
+                        analysisStarted && current > 0 -> "Analyzing..."
+                        current > 0 -> "Stage $current/$total"
+                        else -> "Ready"
                     },
                     style = MaterialTheme.typography.labelMedium,
                     color = Color.White
@@ -132,7 +87,7 @@ fun QuantifiedProgressIndicator(
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Progress bar with time-based fill
+            // Progress bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -170,28 +125,17 @@ fun QuantifiedProgressIndicator(
             
             Spacer(modifier = Modifier.height(6.dp))
             
-            // Status text with detailed timing
+            // Simple status text
             Text(
                 text = when {
-                    current == 0 -> "Ready to analyze • ~${formatTime(totalTimeSeconds)} total"
-                    current <= total -> {
-                        val currentElapsed = if (current > 1) (current - 1) * stageTimeSeconds + (elapsedSeconds % stageTimeSeconds) else elapsedSeconds
-                        "Stage $current • ${formatTime(currentElapsed)} elapsed"
-                    }
-                    else -> "Analysis complete • All stages finished"
+                    current == 0 -> "Ready to analyze"
+                    current >= total -> "Analysis complete"
+                    analysisStarted -> "AI inference in progress • Stage $current of $total"
+                    else -> "Stage $current completed"
                 },
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White.copy(alpha = 0.8f)
             )
         }
     }
-}
-
-/**
- * Format seconds into MM:SS format
- */
-private fun formatTime(seconds: Int): String {
-    val mins = seconds / 60
-    val secs = seconds % 60
-    return "${mins}:${secs.toString().padStart(2, '0')}"
 }
